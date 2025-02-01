@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -27,7 +28,17 @@ import java.util.Objects;
 import android.util.Base64;
 import android.widget.Toast;
 
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+
+import android.Manifest;
+import android.os.Handler;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Handler handler;
+    private Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +51,42 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                1);
+
         Button mybut = findViewById(R.id.EnvoyerIDMEFv2);
+
+
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                // Fonction à exécuter toutes les 2 secondes
+                TextView myloc = findViewById(R.id.myloc);
+                String myloc_text = null;
+                LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                try {
+                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+                        myloc_text = "Lat : " + location.getLatitude() + "\nLong : " + location.getLongitude();
+                    } else {
+                        myloc_text = "Unknown location";
+                    }
+                } catch (SecurityException e) {
+                    myloc_text = "You need to give location permission to fully use this app";
+                }
+                myloc.setText(myloc_text);
+
+                // Rappeler cette fonction après 2000 ms (2 secondes)
+                handler.postDelayed(this, 2000);
+            }
+        };
+
+        // Lancer immédiatement la fonction
+        handler.post(runnable);
+
         mybut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
                     Instant instant = Instant.now() ;
                     EditText descr = findViewById(R.id.idmefv2_descr);
                     EditText cat = findViewById(R.id.idmefv2_cat);
+
+                    String myloc_text = "";
+                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                    try {
+                        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if (location != null) {
+                            myloc_text = "" + location.getLatitude() + ", " + location.getLongitude();
+                        }
+                    } catch (SecurityException e) {
+                    }
 
                     String source = "{\n" +
                             "     \"Description\": \"" + descr.getText() + "\",\n" +
@@ -81,14 +137,14 @@ public class MainActivity extends AppCompatActivity {
                             "         \"Name\": \"syslog\",\n" +
                             "         \"Hostname\": \"www.acme.com\",\n" +
                             "         \"Model\": \"rsyslog 8.2110\",\n" +
-                            "         \"Location\": \"Server room A1, rack 10\"\n" +
+                            "         \"Location\": \"" + myloc_text + "\"\n" +
                             "       }\n" +
                             "     ],\n" +
                             "     \"Target\": [\n" +
                             "       {\n" +
                             "         \"IP\": \"192.0.2.2\",\n" +
                             "         \"Hostname\": \"www.acme.com\",\n" +
-                            "         \"Location\": \"Server room A1, rack 10\",\n" +
+                            "         \"Location\": \"" + myloc_text + "\",\n" +
                             "         \"User\": \"root\"\n" +
                             "       }\n" +
                             "     ]\n" +
