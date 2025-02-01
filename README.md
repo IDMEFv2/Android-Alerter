@@ -4,7 +4,7 @@ The actual version is a POC that will be improved.
 
 # Application on ANDROID
 
-![screenshot](docs/Screenshot_20250202_002640_IDMEFv2 Alerter.jpg)
+![screenshot](docs/Android.jpg)
 
 # Alert in Concerto
 
