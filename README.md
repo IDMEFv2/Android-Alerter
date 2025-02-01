@@ -4,8 +4,8 @@ The actual version is a POC that will be improved.
 
 # Application on ANDROID
 
-![screenshot](docs/Android.jpg)
+![screenshot](docs/android.jpg)
 
 # Alert in Concerto
 
-![screenshot](docs/example.png)
+![screenshot_alert_state](docs/example.png)
