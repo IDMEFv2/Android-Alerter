@@ -3,8 +3,11 @@ package com.example.idmefv2alerter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -29,7 +32,6 @@ import android.util.Base64;
 import android.widget.Toast;
 
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 
 import android.Manifest;
@@ -38,7 +40,9 @@ import android.os.Handler;
 public class MainActivity extends AppCompatActivity {
 
     private Handler handler;
+    private Handler send_idmefv2_period;
     private Runnable runnable;
+    private Runnable runnable_idmefv2_period;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Fonction à exécuter toutes les 2 secondes
-                TextView myloc = findViewById(R.id.myloc);
+                TextView myloc = findViewById(R.id.idmefv2_location);
                 String myloc_text = null;
                 LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 try {
@@ -87,13 +91,68 @@ public class MainActivity extends AppCompatActivity {
         // Lancer immédiatement la fonction
         handler.post(runnable);
 
+        // Récupérer le Spinner
+        Spinner spinner = findViewById(R.id.idmefv2_spin);
+
+        // Définir les options de la liste déroulante
+        String[] items = {"manual", "10m", "30m", "1h", "6h", "12h", "24h"};
+
+        // Créer un adaptateur
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Appliquer l'adaptateur au Spinner
+        spinner.setAdapter(adapter);
+
+        send_idmefv2_period = new Handler();
+        runnable_idmefv2_period = new Runnable() {
+            @Override
+            public void run() {
+                Spinner spinner = findViewById(R.id.idmefv2_spin);
+                Integer[] items_int = {null, 600000, 1800000, 3600000, 21600000, 43200000, 86400000};
+                Integer sel = items_int[spinner.getSelectedItemPosition()];
+                if (sel != null) {
+                    send_idmefv2_period.removeCallbacksAndMessages(null);
+                    send_idmefv2_period.postDelayed(this, items_int[(int) spinner.getSelectedItemPosition()] );
+                    findViewById(R.id.EnvoyerIDMEFv2).performClick();
+                }
+            }
+        };
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            String prevpos = (String) spinner.getItemAtPosition(0);
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (prevpos == parent.getItemAtPosition(position)) {
+                    return;
+                }
+                prevpos = (String) parent.getItemAtPosition(position);
+                Spinner spinner = findViewById(R.id.idmefv2_spin);
+                Integer[] items_int = {null, 600000, 1800000, 3600000, 21600000, 43200000, 86400000};
+                Integer sel = items_int[spinner.getSelectedItemPosition()];
+                if (sel != null) {
+                    send_idmefv2_period.removeCallbacksAndMessages(null);
+                    send_idmefv2_period.postDelayed(runnable_idmefv2_period, items_int[(int) spinner.getSelectedItemPosition()] );
+                    findViewById(R.id.EnvoyerIDMEFv2).performClick();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Rien à faire ici
+            }
+
+        });
+
         mybut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "click", Toast.LENGTH_SHORT).show();
                 try {
                     Instant instant = Instant.now() ;
                     EditText descr = findViewById(R.id.idmefv2_descr);
                     EditText cat = findViewById(R.id.idmefv2_cat);
+                    EditText siem_srv = findViewById(R.id.idmefv2_url);
+                    EditText siem_login = findViewById(R.id.idmefv2_url_login);
+                    EditText siem_password = findViewById(R.id.idmefv2_url_pass);
 
                     String myloc_text = "";
                     LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -151,8 +210,14 @@ public class MainActivity extends AppCompatActivity {
                             " }";
                     JSONObject json=new JSONObject(source);
                     String jsonString = json.toString();
-                    new PostData().execute("http://141.95.158.49/api_idmefv2/","admin","S4Sadmin",jsonString);
-
+                    new PostData().execute(siem_srv.getText().toString(),siem_login.getText().toString(),siem_password.getText().toString(),jsonString);
+                    Spinner spinner = findViewById(R.id.idmefv2_spin);
+                    Integer[] items_int = {null, 600000, 1800000, 3600000, 21600000, 43200000, 86400000};
+                    Integer sel = items_int[spinner.getSelectedItemPosition()];
+                    if (sel != null) {
+                        send_idmefv2_period.removeCallbacksAndMessages(null);
+                        send_idmefv2_period.postDelayed(runnable_idmefv2_period, items_int[(int) spinner.getSelectedItemPosition()]);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

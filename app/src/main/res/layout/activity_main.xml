@@ -17,17 +17,102 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.08" />
+        app:layout_constraintVertical_bias="0.037" />
 
     <TextView
-        android:id="@+id/myloc"
-        android:layout_width="165dp"
-        android:layout_height="103dp"
+        android:id="@+id/mytexte2"
+        android:layout_width="185dp"
+        android:layout_height="20dp"
+        android:text="Alert.Category"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.165"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.531" />
+        app:layout_constraintVertical_bias="0.105" />
+
+    <TextView
+        android:id="@+id/mytexte3"
+        android:layout_width="185dp"
+        android:layout_height="20dp"
+        android:text="Alert.Description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.163"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.219" />
+
+    <TextView
+        android:id="@+id/mytexte4"
+        android:layout_width="185dp"
+        android:layout_height="20dp"
+        android:text="Target.Geolocation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.163"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.348" />
+
+    <TextView
+        android:id="@+id/mytexte5"
+        android:layout_width="185dp"
+        android:layout_height="20dp"
+        android:text="SIEM Serveur"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.534" />
+
+    <TextView
+        android:id="@+id/mytexte7"
+        android:layout_width="185dp"
+        android:layout_height="20dp"
+        android:text="Login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.62" />
+
+    <TextView
+        android:id="@+id/mytexte8"
+        android:layout_width="185dp"
+        android:layout_height="20dp"
+        android:text="Password"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.72" />
+
+    <TextView
+        android:id="@+id/mytexte6"
+        android:layout_width="185dp"
+        android:layout_height="20dp"
+        android:text="Period"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.819" />
+
+    <TextView
+        android:id="@+id/idmefv2_location"
+        android:layout_width="293dp"
+        android:layout_height="47dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.898"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.392" />
 
     <Button
         android:id="@+id/EnvoyerIDMEFv2"
@@ -39,34 +124,87 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.721" />
-
-    <EditText
-        android:id="@+id/idmefv2_descr"
-        android:layout_width="213dp"
-        android:layout_height="89dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Potential attack"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.461" />
 
     <EditText
         android:id="@+id/idmefv2_cat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="281dp"
+        android:layout_height="36dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Attempt.attack"
+        android:text="Test.test"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.349" />
+        app:layout_constraintVertical_bias="0.149" />
+
+    <EditText
+        android:id="@+id/idmefv2_descr"
+        android:layout_width="290dp"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Hearbeat Smartphone XXX"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.527"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.256" />
+
+    <EditText
+        android:id="@+id/idmefv2_url_login"
+        android:layout_width="385dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="admin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.668" />
+
+    <EditText
+        android:id="@+id/idmefv2_url_pass"
+        android:layout_width="385dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="S4Sadmin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.771" />
+
+    <EditText
+        android:id="@+id/idmefv2_url"
+        android:layout_width="385dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="http://141.95.158.49/api_idmefv2/"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.579" />
+
+    <Spinner
+        android:id="@+id/idmefv2_spin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.088"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mytexte6"
+        app:layout_constraintVertical_bias="0.133" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
