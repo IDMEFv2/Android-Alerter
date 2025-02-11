@@ -2,7 +2,10 @@ package com.example.idmefv2alerter;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +28,9 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import android.util.Base64;
 import android.widget.Toast;
@@ -54,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         Button mybut = findViewById(R.id.EnvoyerIDMEFv2);
 
         Spinner spinner = findViewById(R.id.idmefv2_spin);
-        String[] items = {"manual", "10m", "30m", "1h", "6h", "12h", "24h"};
+        String[] items = {"manual", "1m", "10m", "30m", "1h", "6h", "12h", "24h"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -68,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 prevpos = (String) parent.getItemAtPosition(position);
                 Spinner spinner = findViewById(R.id.idmefv2_spin);
-                Integer[] items_int = {null, 10*60*1000, 30*60*1000, 1*60*60*1000, 6*60*60*1000, 12*60*60*1000, 24*60*60*1000};
+                Integer[] items_int = {null, 1*60*1000, 10*60*1000, 30*60*1000, 1*60*60*1000, 6*60*60*1000, 12*60*60*1000, 24*60*60*1000};
                 Integer sel = items_int[spinner.getSelectedItemPosition()];
                 AlarmReceiver.stopAlarm(MainActivity.this);
                 if (sel != null) {
@@ -100,6 +106,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static String getPublicIP() {
+        try {
+            URL url = new URL("https://api.ipify.org?format=text");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String ip = in.readLine();
+            in.close();
+            return ip;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     public void sendIDMEF(Context context, View v) {
         try {
             Instant instant = Instant.now() ;
@@ -111,6 +132,17 @@ public class MainActivity extends AppCompatActivity {
             TextView myloc = findViewById(R.id.idmefv2_location);
 
             String myloc_text = ",         \"Location\": \"" + myloc.getText() + "\"\n";
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future<String> future = executor.submit(() -> {
+                return getPublicIP();
+            });
+
+            String myip = future.get();
+
+            if (myip != "") {
+                myip = ",         \"IP\": \"" + myip + "\"\n";
+            }
 
             String source = "{\n" +
                     "     \"Description\": \"" + descr.getText() + "\",\n" +
@@ -140,22 +172,21 @@ public class MainActivity extends AppCompatActivity {
                     "     },\n" +
                     "     \"Sensor\": [\n" +
                     "       {\n" +
-                    "         \"IP\": \"192.0.2.5\",\n" +
-                    "         \"Name\": \"syslog\",\n" +
-                    "         \"Hostname\": \"www.acme.com\",\n" +
-                    "         \"Model\": \"rsyslog 8.2110\"\n" +
+                    "         \"Name\": \"Smartphone\",\n" +
+                    "         \"Model\": \"" + Build.MANUFACTURER + " " + Build.MODEL + "\"\n" +
+                    myip +
                     myloc_text +
                     "       }\n" +
                     "     ],\n" +
                     "     \"Target\": [\n" +
                     "       {\n" +
-                    "         \"IP\": \"192.0.2.2\",\n" +
-                    "         \"Hostname\": \"www.acme.com\",\n" +
-                    "         \"User\": \"root\"\n" +
+                    "         \"Hostname\": \"" + Build.MANUFACTURER + " " + Build.MODEL + "\"\n" +
+                    myip +
                     myloc_text +
                     "       }\n" +
                     "     ]\n" +
                     " }";
+
             JSONObject json=new JSONObject(source);
             String jsonString = json.toString();
             new PostData().execute(siem_srv.getText().toString(),siem_login.getText().toString(),siem_password.getText().toString(),jsonString);
