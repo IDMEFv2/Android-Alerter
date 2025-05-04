@@ -49,19 +49,19 @@ public class UpdateGPS extends BroadcastReceiver {
 
     private void executeTask(Context context) {
         MainActivity mainActivity = MainActivity.getInstance();
-
-        String myloc_text = null;
         LocationManager locationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
         try {
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location != null) {
-                myloc_text = location.getLatitude() + ", " + location.getLongitude();
+                mainActivity.updateTextViewLa(String.valueOf(location.getLatitude()), R.id.latitude_val);
+                mainActivity.updateTextViewLo(String.valueOf(location.getLongitude()), R.id.longitude_val);
             } else {
-                myloc_text = "Unknown location";
+                mainActivity.updateTextViewLa("Unknown", R.id.latitude_val);
+                mainActivity.updateTextViewLo("Unknown", R.id.longitude_val);
             }
         } catch (SecurityException e) {
-            myloc_text = "You need to give location permission to fully use this app";
+            mainActivity.updateTextViewLa("Unknown", R.id.latitude_val);
+            mainActivity.updateTextViewLo("Unknown", R.id.longitude_val);
         }
-        mainActivity.updateTextView(myloc_text, R.id.idmefv2_location);
     }
 }

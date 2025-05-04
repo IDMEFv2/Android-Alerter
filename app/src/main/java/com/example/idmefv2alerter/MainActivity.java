@@ -1,22 +1,32 @@
 package com.example.idmefv2alerter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import org.json.JSONObject;
 
@@ -43,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
    public static MainActivity getInstance() {
        return instance;
    }
+   private MyApp app;
+
+   private Integer[] rad_col = {0,0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         instance = this;
+        app = (MyApp) getApplicationContext();
 
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -57,28 +71,139 @@ public class MainActivity extends AppCompatActivity {
 
         UpdateGPS.scheduleAlarm(MainActivity.this, 0);
 
+        InitializeSpinnerPriority();
+
+        InitializeSpinnerPeriod();
+
+        InitializeHeadButtons();
+
+        InitializeSendIDMEFButton();
+
+        InitializeTexts();
+    }
+
+    public void InitializeSendIDMEFButton() {
         Button mybut = findViewById(R.id.EnvoyerIDMEFv2);
 
-        Spinner spinner = findViewById(R.id.idmefv2_spin);
+        mybut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ( app.getPeriod() == 0) {
+                    sendIDMEF(MainActivity.this, v);
+                    Toast.makeText(MainActivity.this, "IDMEFv2 sent", Toast.LENGTH_SHORT).show();
+                } else {
+                    if ( mybut.getText().toString() == "STOP") {
+                        mybut.setBackgroundColor(0);
+                        mybut.setText("START");
+                        AlarmReceiver.stopAlarm(MainActivity.this);
+                        EnableALL();
+                    } else {
+                        mybut.setBackgroundColor(Color.RED);
+                        mybut.setText("STOP");
+                        Integer[] items_int = {null, 1*60*1000, 10*60*1000, 30*60*1000, 1*60*60*1000, 6*60*60*1000, 12*60*60*1000, 24*60*60*1000};
+                        Integer sel = items_int[app.getPeriod()];
+                        AlarmReceiver.stopAlarm(MainActivity.this);
+                        AlarmReceiver.scheduleAlarm(MainActivity.this,sel,0);
+                        DisableALL();
+                    }
+                }
+            }
+        });
+    }
+
+    public void EnableALL() {
+        ((Spinner) findViewById(R.id.priority_val)).setEnabled(true);
+        ((Spinner) findViewById(R.id.period_val)).setEnabled(true);
+        ((EditText) findViewById(R.id.message_val)).setEnabled(true);
+        ((RadioButton) findViewById(R.id.radioButton1)).setEnabled(true);
+        ((RadioButton) findViewById(R.id.radioButton1)).setTextColor(rad_col[0]);
+        ((RadioButton) findViewById(R.id.radioButton2)).setEnabled(true);
+        ((RadioButton) findViewById(R.id.radioButton2)).setTextColor(rad_col[1]);
+        ((Button) findViewById(R.id.act1_settings)).setEnabled(true);
+
+        ((TextView) findViewById(R.id.priority)).setEnabled(true);
+        ((TextView) findViewById(R.id.period)).setEnabled(true);
+        ((TextView) findViewById(R.id.latitude)).setEnabled(true);
+        ((TextView) findViewById(R.id.latitude_val)).setEnabled(true);
+        ((TextView) findViewById(R.id.longitude)).setEnabled(true);
+        ((TextView) findViewById(R.id.longitude_val)).setEnabled(true);
+    }
+
+    public void DisableALL() {
+        rad_col[0] = ((RadioButton) findViewById(R.id.radioButton1)).getCurrentTextColor();
+        rad_col[1] = ((RadioButton) findViewById(R.id.radioButton2)).getCurrentTextColor();
+        ((Spinner) findViewById(R.id.priority_val)).setEnabled(false);
+        ((Spinner) findViewById(R.id.period_val)).setEnabled(false);
+        ((EditText) findViewById(R.id.message_val)).setEnabled(false);
+        ((RadioButton) findViewById(R.id.radioButton1)).setEnabled(false);
+        ((RadioButton) findViewById(R.id.radioButton1)).setTextColor(ContextCompat.getColor(this, R.color.gray));
+        ((RadioButton) findViewById(R.id.radioButton2)).setEnabled(false);
+        ((RadioButton) findViewById(R.id.radioButton2)).setTextColor(ContextCompat.getColor(this, R.color.gray));
+        ((Button) findViewById(R.id.act1_settings)).setEnabled(false);
+
+        ((TextView) findViewById(R.id.priority)).setEnabled(false);
+        ((TextView) findViewById(R.id.period)).setEnabled(false);
+        ((TextView) findViewById(R.id.latitude)).setEnabled(false);
+        ((TextView) findViewById(R.id.latitude_val)).setEnabled(false);
+        ((TextView) findViewById(R.id.longitude)).setEnabled(false);
+        ((TextView) findViewById(R.id.longitude_val)).setEnabled(false);
+    }
+
+    public void InitializeHeadButtons() {
+        Button button1 = findViewById(R.id.act1_settings);
+        button1.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+            startActivity(intent);
+        });
+
+        Button button2 = findViewById(R.id.act1_help);
+        button2.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+            startActivity(intent);
+        });
+    }
+
+    public void InitializeSpinnerPriority() {
+        Spinner spinner = findViewById(R.id.priority_val);
+        String[] items = {"Info", "Unknown", "Low", "Medium", "High"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        app.setPriority(items[0]);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Spinner spinner = findViewById(R.id.priority_val);
+                String[] items = {"Info", "Unknown", "Low", "Medium", "High"};
+                app.setPriority(items[spinner.getSelectedItemPosition()]);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+
+        });
+    }
+
+    public void InitializeSpinnerPeriod() {
+        Spinner spinner = findViewById(R.id.period_val);
         String[] items = {"manual", "1m", "10m", "30m", "1h", "6h", "12h", "24h"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        app.setPeriod(0);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            String prevpos = (String) spinner.getItemAtPosition(0);
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (prevpos == parent.getItemAtPosition(position)) {
-                    return;
-                }
-                prevpos = (String) parent.getItemAtPosition(position);
-                Spinner spinner = findViewById(R.id.idmefv2_spin);
-                Integer[] items_int = {null, 1*60*1000, 10*60*1000, 30*60*1000, 1*60*60*1000, 6*60*60*1000, 12*60*60*1000, 24*60*60*1000};
-                Integer sel = items_int[spinner.getSelectedItemPosition()];
-                AlarmReceiver.stopAlarm(MainActivity.this);
-                if (sel != null) {
-                    AlarmReceiver.scheduleAlarm(MainActivity.this,items_int[(int) spinner.getSelectedItemPosition()],0);
+                Spinner spinner = findViewById(R.id.period_val);
+                app.setPeriod(spinner.getSelectedItemPosition());
+                Button mybut = findViewById(R.id.EnvoyerIDMEFv2);
+                if ( spinner.getSelectedItemPosition() == 0 ) {
+                    mybut.setText("Send IDMEFv2");
+                } else {
+                    mybut.setText("START");
+                    mybut.setBackgroundColor(0);
                 }
             }
             @Override
@@ -87,21 +212,57 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        mybut.setOnClickListener(new View.OnClickListener() {
+
+    }
+
+    public void InitializeTexts() {
+        ((EditText) findViewById(R.id.message_val)).addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                sendIDMEF(MainActivity.this, v);
-                Toast.makeText(MainActivity.this, "IDMEFv2 sent", Toast.LENGTH_SHORT).show();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                app.setMessage(s.toString());
+            }
+        });
+
+        ((RadioGroup) findViewById(R.id.prob_or_no_val)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton selectedButton = findViewById(checkedId);
+                String valeur = selectedButton.getText().toString();
+                app.setDescr(valeur);
             }
         });
     }
 
-    public void updateTextView(String text, Integer id) {
+    public void updateTextViewLa(String text, Integer id) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 TextView textView = findViewById(id);
                 textView.setText(text);
+                if ( text != "Unknown")
+                    app.setLatitude(text);
+                else
+                    app.setLatitude("Unknown");
+            }
+        });
+    }
+
+    public void updateTextViewLo(String text, Integer id) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView textView = findViewById(id);
+                textView.setText(text);
+                if ( text != "Unknown")
+                    app.setLongitude(text);
+                else
+                    app.setLongitude("Unknown");
             }
         });
     }
@@ -124,14 +285,6 @@ public class MainActivity extends AppCompatActivity {
     public void sendIDMEF(Context context, View v) {
         try {
             Instant instant = Instant.now() ;
-            EditText descr = findViewById(R.id.idmefv2_descr);
-            EditText cat = findViewById(R.id.idmefv2_cat);
-            EditText siem_srv = findViewById(R.id.idmefv2_url);
-            EditText siem_login = findViewById(R.id.idmefv2_url_login);
-            EditText siem_password = findViewById(R.id.idmefv2_url_pass);
-            TextView myloc = findViewById(R.id.idmefv2_location);
-
-            String myloc_text = ",         \"Location\": \"" + myloc.getText() + "\"\n";
 
             ExecutorService executor = Executors.newSingleThreadExecutor();
             Future<String> future = executor.submit(() -> {
@@ -145,13 +298,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String source = "{\n" +
-                    "     \"Description\": \"" + descr.getText() + "\",\n" +
-                    "     \"Priority\": \"Medium\",\n" +
+                    "     \"Description\": \"" + app.getDescr() + "\",\n" +
+                    "     \"Priority\": \""+ app.getPriority() +"\",\n" +
                     "     \"CreateTime\": \"" + instant.toString() + "\",\n" +
                     "     \"StartTime\": \"" + instant.toString() + "\",\n" +
                     "     \"Category\": [\n" +
-                    "       \"" + cat.getText() + "\"\n" +
+                    "       \"" + app.getCategory() + "\"\n" +
                     "     ],\n" +
+                    app.getJSONNote() +
                     "     \"Analyzer\": {\n" +
                     "       \"Name\": \"SIEM\",\n" +
                     "       \"Hostname\": \"siem.acme.com\",\n" +
@@ -175,24 +329,28 @@ public class MainActivity extends AppCompatActivity {
                     "         \"Name\": \"Smartphone\",\n" +
                     "         \"Model\": \"" + Build.MANUFACTURER + " " + Build.MODEL + "\"\n" +
                     myip +
-                    myloc_text +
+                    app.getJSONLoc() +
                     "       }\n" +
                     "     ],\n" +
                     "     \"Target\": [\n" +
                     "       {\n" +
                     "         \"Hostname\": \"" + Build.MANUFACTURER + " " + Build.MODEL + "\"\n" +
+                    app.getJSONUser() +
+                    app.getJSONCategory() +
                     myip +
-                    myloc_text +
+                    app.getJSONLoc() +
                     "       }\n" +
                     "     ]\n" +
                     " }";
 
             JSONObject json=new JSONObject(source);
             String jsonString = json.toString();
-            new PostData().execute(siem_srv.getText().toString(),siem_login.getText().toString(),siem_password.getText().toString(),jsonString);
+            new PostData().execute(app.getUrl(),app.getLogin(),app.getPassword(),jsonString);
+            Log.e("IDMEFv2",jsonString);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 

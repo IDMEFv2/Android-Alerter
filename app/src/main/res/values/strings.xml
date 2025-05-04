@@ -1,3 +1,47 @@
 <resources>
     <string name="app_name">IDMEFv2 Alerter</string>
+    <string name="app_help">IDMEFv2-App is a smal IDMEFv2 agent. Using
+IDMEFv2-App you can send IDMEFv2 messages to a connected IDMEFv2 SIEM and display you
+location on its map. IDMEFv2-App is a proof of
+concept implementing format and transport IETF
+drafts. You can send alerts to your own Concerto
+SIEM or test the app on the online prototype after
+registration.&lt;br/&gt;&lt;br/&gt;
+Readme:&lt;br/&gt;
+https://github.com/IDMEFv2/Android-Alerter
+&lt;br/&gt;&lt;br/&gt;
+Registration (for url, login password):&lt;br/&gt;
+https://www.idmefv2.org/android-map
+&lt;br/&gt;&lt;br/&gt;
+IDMEFv2 Drafts Source code:&lt;br/&gt;
+https://github.com/IDMEFv2/IDMEFv2-Drafts
+&lt;br/&gt;&lt;br/&gt;
+Concerto SIEM:&lt;br/&gt;
+https://github.com/IDMEFv2/Concerto-SIEM
+&lt;br/&gt;&lt;br/&gt;
+IDMEFv2 Task Force:&lt;br/&gt;
+https://www.idmefv2.org
+    </string>
+    <string name="app_help2">IDMEFv2-App is a smal IDMEFv2 agent. Using
+IDMEFv2-App you can send IDMEFv2 messages to a connected IDMEFv2 SIEM and display you
+location on its map. IDMEFv2-App is a proof of
+concept implementing format and transport IETF
+drafts. You can send alerts to your own Concerto
+SIEM or test the app on the online prototype after
+registration.&lt;br/&gt;&lt;br/&gt;
+Readme:&lt;br/&gt;
+&lt;a href="https://github.com/IDMEFv2/AndroidAlerter/blob/main/README.md" &gt;https://github.com/IDMEFv2/AndroidAlerter/blob/main/README.md&lt;/a&gt;
+&lt;br/&gt;&lt;br/&gt;
+Registration (for url, login password):&lt;br/&gt;
+&lt;a href="https://www.idmefv2.org/android-map"&gt;https://www.idmefv2.org/android-map&lt;/a&gt;
+&lt;br/&gt;&lt;br/&gt;
+IDMEFv2-App Source code:&lt;br/&gt;
+&lt;a href="https://github.com/IDMEFv2/IDMEFv2-App"&gt;https://github.com/IDMEFv2/IDMEFv2-App&lt;/a&gt;
+&lt;br/&gt;&lt;br/&gt;
+Concerto SIEM:&lt;br/&gt;
+&lt;a href="https://github.com/IDMEFv2/ConcertoSIEM"&gt;https://github.com/IDMEFv2/ConcertoSIEM&lt;/a&gt;
+&lt;br/&gt;&lt;br/&gt;
+IDMEFv2 Task Force:&lt;br/&gt;
+&lt;a href="https://www.idmefv2.org"&gt;https://www.idmefv2.org&lt;/a&gt;
+    </string>
 </resources>
