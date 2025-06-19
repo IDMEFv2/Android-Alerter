@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void InitializeSpinnerPeriod() {
         Spinner spinner = findViewById(R.id.period_val);
-        String[] items = {"manual", "1m", "10m", "30m", "1h", "6h", "12h", "24h"};
+        String[] items = {"manual", "1 mn", "10 mn", "30 mn", "1 h", "6 h", "12 h", "24 h"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
