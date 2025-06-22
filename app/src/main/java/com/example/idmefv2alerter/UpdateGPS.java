@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.content.Context;
 
 public class UpdateGPS extends BroadcastReceiver {
 
@@ -49,6 +50,9 @@ public class UpdateGPS extends BroadcastReceiver {
 
     private void executeTask(Context context) {
         MainActivity mainActivity = MainActivity.getInstance();
+        MyApp app = (MyApp) mainActivity.getApplicationContext();
+        if ( app.getPeriod() == 1 && app.getLatitude() != "Unknown" )
+            return;
         LocationManager locationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
         try {
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);

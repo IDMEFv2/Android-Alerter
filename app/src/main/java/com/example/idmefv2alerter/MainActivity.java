@@ -9,8 +9,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
         InitializeSendIDMEFButton();
 
         InitializeTexts();
+
+        ((EditText) findViewById(R.id.latitude_val)).setEnabled(false);
+        ((EditText) findViewById(R.id.longitude_val)).setEnabled(false);
+
+        rad_col[0] = ((RadioButton) findViewById(R.id.radioButton1)).getCurrentTextColor();
+        rad_col[1] = ((RadioButton) findViewById(R.id.radioButton2)).getCurrentTextColor();
+
     }
 
     public void InitializeSendIDMEFButton() {
@@ -88,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         mybut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ( app.getPeriod() == 0) {
+                if ( app.getPeriod() == 0 || app.getPeriod() == 1 ) {
                     sendIDMEF(MainActivity.this, v);
                     Toast.makeText(MainActivity.this, "IDMEFv2 sent", Toast.LENGTH_SHORT).show();
                 } else {
@@ -100,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         mybut.setBackgroundColor(Color.RED);
                         mybut.setText("STOP");
-                        Integer[] items_int = {null, 1*60*1000, 10*60*1000, 30*60*1000, 1*60*60*1000, 6*60*60*1000, 12*60*60*1000, 24*60*60*1000};
+                        Integer[] items_int = {null, null, 1*60*1000, 10*60*1000, 30*60*1000, 1*60*60*1000, 6*60*60*1000, 12*60*60*1000, 24*60*60*1000};
                         Integer sel = items_int[app.getPeriod()];
                         AlarmReceiver.stopAlarm(MainActivity.this);
                         AlarmReceiver.scheduleAlarm(MainActivity.this,sel,0);
@@ -124,14 +135,12 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.priority)).setEnabled(true);
         ((TextView) findViewById(R.id.period)).setEnabled(true);
         ((TextView) findViewById(R.id.latitude)).setEnabled(true);
-        ((TextView) findViewById(R.id.latitude_val)).setEnabled(true);
+        ((EditText) findViewById(R.id.latitude_val)).setEnabled(false);
         ((TextView) findViewById(R.id.longitude)).setEnabled(true);
-        ((TextView) findViewById(R.id.longitude_val)).setEnabled(true);
+        ((EditText) findViewById(R.id.longitude_val)).setEnabled(false);
     }
 
     public void DisableALL() {
-        rad_col[0] = ((RadioButton) findViewById(R.id.radioButton1)).getCurrentTextColor();
-        rad_col[1] = ((RadioButton) findViewById(R.id.radioButton2)).getCurrentTextColor();
         ((Spinner) findViewById(R.id.priority_val)).setEnabled(false);
         ((Spinner) findViewById(R.id.period_val)).setEnabled(false);
         ((EditText) findViewById(R.id.message_val)).setEnabled(false);
@@ -144,9 +153,9 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.priority)).setEnabled(false);
         ((TextView) findViewById(R.id.period)).setEnabled(false);
         ((TextView) findViewById(R.id.latitude)).setEnabled(false);
-        ((TextView) findViewById(R.id.latitude_val)).setEnabled(false);
+        ((EditText) findViewById(R.id.latitude_val)).setEnabled(false);
         ((TextView) findViewById(R.id.longitude)).setEnabled(false);
-        ((TextView) findViewById(R.id.longitude_val)).setEnabled(false);
+        ((EditText) findViewById(R.id.longitude_val)).setEnabled(false);
     }
 
     public void InitializeHeadButtons() {
@@ -187,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void InitializeSpinnerPeriod() {
         Spinner spinner = findViewById(R.id.period_val);
-        String[] items = {"manual", "1 mn", "10 mn", "30 mn", "1 h", "6 h", "12 h", "24 h"};
+        String[] items = {"manual", "edit", "1 mn", "10 mn", "30 mn", "1 h", "6 h", "12 h", "24 h"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -199,20 +208,28 @@ public class MainActivity extends AppCompatActivity {
                 Spinner spinner = findViewById(R.id.period_val);
                 app.setPeriod(spinner.getSelectedItemPosition());
                 Button mybut = findViewById(R.id.EnvoyerIDMEFv2);
-                if ( spinner.getSelectedItemPosition() == 0 ) {
+                if ( spinner.getSelectedItemPosition() == 0 || spinner.getSelectedItemPosition() == 1 ) {
                     mybut.setText("Send IDMEFv2");
+                    AlarmReceiver.stopAlarm(MainActivity.this);
+                    EnableALL();
+                    if ( spinner.getSelectedItemPosition() == 1 ) {
+                        ((EditText) findViewById(R.id.longitude_val)).setEnabled(true);
+                        ((EditText) findViewById(R.id.latitude_val)).setEnabled(true);
+                    } else {
+                        ((EditText) findViewById(R.id.longitude_val)).setEnabled(false);
+                        ((EditText) findViewById(R.id.latitude_val)).setEnabled(false);
+                    }
                 } else {
                     mybut.setText("START");
                     mybut.setBackgroundColor(0);
+                    AlarmReceiver.stopAlarm(MainActivity.this);
+                    EnableALL();
                 }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-
         });
-
-
     }
 
     public void InitializeTexts() {
@@ -229,14 +246,50 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ((EditText) findViewById(R.id.latitude_val)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                app.setLatitude(s.toString());
+            }
+        });
+
+        ((EditText) findViewById(R.id.longitude_val)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                app.setLongitude(s.toString());
+            }
+        });
+
         ((RadioGroup) findViewById(R.id.prob_or_no_val)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 RadioButton selectedButton = findViewById(checkedId);
                 String valeur = selectedButton.getText().toString();
                 app.setDescr(valeur);
+                Integer a = rad_col[0];
+                rad_col[0] = rad_col[1];
+                rad_col[1] = a;
+                ((RadioButton) findViewById(R.id.radioButton1)).setTextColor(rad_col[0]);
+                ((RadioButton) findViewById(R.id.radioButton2)).setTextColor(rad_col[1]);
             }
         });
+
+        TextView textView = findViewById(R.id.phonemap);
+        textView.setText(Html.fromHtml(getString(R.string.phonemap_url), Html.FROM_HTML_MODE_LEGACY));
+        Linkify.addLinks(textView, Linkify.WEB_URLS);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public void updateTextViewLa(String text, Integer id) {
@@ -296,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
             if (myip != "") {
                 myip = ",         \"IP\": \"" + myip + "\"\n";
             }
+            String android_uuid = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
             String source = "{\n" +
                     "     \"Description\": \"" + app.getDescr() + "\",\n" +
@@ -327,15 +381,14 @@ public class MainActivity extends AppCompatActivity {
                     "     \"Sensor\": [\n" +
                     "       {\n" +
                     "         \"Name\": \"Smartphone\",\n" +
-                    "         \"Model\": \"" + Build.MANUFACTURER + " " + Build.MODEL + "\"\n" +
+                    "         \"Model\": \"" + Build.MANUFACTURER + " " + Build.MODEL + " " + android_uuid + "\"\n" +
                     myip +
                     app.getJSONLoc() +
                     "       }\n" +
                     "     ],\n" +
                     "     \"Target\": [\n" +
                     "       {\n" +
-                    "         \"Hostname\": \"" + Build.MANUFACTURER + " " + Build.MODEL + "\"\n" +
-                    app.getJSONUser() +
+                    app.getJSONUser().substring(1) +
                     app.getJSONCategory() +
                     myip +
                     app.getJSONLoc() +

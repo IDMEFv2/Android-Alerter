@@ -45,8 +45,13 @@ public class MainActivity2 extends AppCompatActivity {
             finish();
         });
 
-
         InitializeTexts();
+
+        ((EditText) findViewById(R.id.username_val)).setText(app.getUser());
+        ((EditText) findViewById(R.id.login_val)).setText(app.getLogin());
+        ((EditText) findViewById(R.id.password_val)).setText(app.getPassword());
+        ((EditText) findViewById(R.id.url_val)).setText(app.getUrl());
+        ((Spinner) findViewById(R.id.category_val)).setSelection(app.getUserCategoryInt());
     }
 
     public void InitializeSpinnerCategory() {
@@ -55,14 +60,12 @@ public class MainActivity2 extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        app.setUserCategory(items[0]);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Spinner spinner = findViewById(R.id.category_val);
-                String[] items = {"Phone", "Car", "Motorcycle", "Bike", "Truck" };
-                app.setUserCategory(items[spinner.getSelectedItemPosition()]);
+                app.setUserCategory(spinner.getSelectedItemPosition());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

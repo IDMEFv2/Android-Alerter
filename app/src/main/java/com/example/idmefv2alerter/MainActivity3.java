@@ -21,7 +21,7 @@ public class MainActivity3 extends AppCompatActivity {
         setContentView(R.layout.activity_main3);
 
         TextView textView = findViewById(R.id.help);
-        textView.setText(Html.fromHtml(getString(R.string.app_help))); //, Html.FROM_HTML_MODE_LEGACY));
+        textView.setText(Html.fromHtml(getString(R.string.app_help)));
         Linkify.addLinks(textView, Linkify.WEB_URLS);
 
         Button button1 = findViewById(R.id.act3_alert);

@@ -7,7 +7,7 @@ public class MyApp extends Application {
     private String url = "http://141.95.158.49/api_idmefv2/";
     private String login = "admin";
     private String password = "S4Sadmin";
-    private String user_category = "Phone";
+    private Integer user_category = 0;
     private String priority = "Info";
 
     private Integer period = 0;
@@ -36,7 +36,7 @@ public class MyApp extends Application {
         this.password = s;
     }
 
-    public void setUserCategory(String s) {
+    public void setUserCategory(Integer s) {
         this.user_category = s;
     }
 
@@ -81,6 +81,11 @@ public class MyApp extends Application {
     }
 
     public String getUserCategory() {
+        String[] items = {"Phone", "Car", "Motorcycle", "Bike", "Truck" };
+        return items[user_category];
+    }
+
+    public Integer getUserCategoryInt() {
         return user_category;
     }
 
@@ -125,9 +130,7 @@ public class MyApp extends Application {
     }
 
     public String getJSONCategory() {
-        if (user_category != "")
-            return ",         \"Category\": \"" + user_category + "\"\n";
-        return "";
+        return ",         \"Category\": \"" + getUserCategory() + "\"\n";
     }
 
     public String getJSONNote() {

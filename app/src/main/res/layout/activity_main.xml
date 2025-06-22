@@ -11,7 +11,7 @@
         android:id="@+id/act1_subtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="65dp"
+        android:layout_marginBottom="35dp"
         android:text="Safe4Soc IDMEFv2 alerter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -109,17 +109,18 @@
 
     <TextView
         android:id="@+id/priority"
-        android:layout_width="120dp"
+        android:layout_width="80dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:text="Priority"
+        android:gravity="center_vertical|center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/priority_val"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
     <Spinner
         android:id="@+id/priority_val"
-        android:layout_width="172dp"
+        android:layout_width="260dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:spinnerMode="dropdown"
@@ -129,17 +130,18 @@
 
     <TextView
         android:id="@+id/period"
-        android:layout_width="120dp"
+        android:layout_width="80dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
-        android:text="Period"
+        android:text="Mode"
+        android:gravity="center_vertical|center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/period_val"
         app:layout_constraintTop_toBottomOf="@+id/priority" />
 
     <Spinner
         android:id="@+id/period_val"
-        android:layout_width="172dp"
+        android:layout_width="260dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:spinnerMode="dropdown"
@@ -149,54 +151,79 @@
 
     <TextView
         android:id="@+id/latitude"
-        android:layout_width="120dp"
+        android:layout_width="80dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:text="Latitude"
+        android:gravity="center_vertical|center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/latitude_val"
         app:layout_constraintTop_toBottomOf="@+id/period" />
 
-    <TextView
+    <EditText
         android:id="@+id/latitude_val"
-        android:layout_width="172dp"
+        android:layout_width="260dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:text="Unknown"
+        android:inputType="text|textNoSuggestions"
+        android:background="@android:color/transparent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintStart_toEndOf="@+id/latitude"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/period_val" />
+        app:layout_constraintTop_toBottomOf="@+id/period_val"
+        android:paddingLeft="8dp"/>
 
     <TextView
         android:id="@+id/longitude"
-        android:layout_width="120dp"
+        android:layout_width="80dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:text="Longitude"
+        android:gravity="center_vertical|center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/longitude_val"
         app:layout_constraintTop_toBottomOf="@+id/latitude" />
 
-    <TextView
+    <EditText
         android:id="@+id/longitude_val"
-        android:layout_width="172dp"
+        android:layout_width="260dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:text="Unknown"
+        android:inputType="text|textNoSuggestions"
+        android:background="@android:color/transparent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintStart_toEndOf="@+id/longitude"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/latitude_val" />
+        app:layout_constraintTop_toBottomOf="@+id/latitude_val"
+        android:paddingLeft="8dp"/>
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="80dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:text="Notes"
+        android:gravity="center_vertical|center_horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/message_val"
+        app:layout_constraintTop_toBottomOf="@+id/longitude" />
 
     <EditText
         android:id="@+id/message_val"
-        android:layout_width="300dp"
+        android:layout_width="260dp"
         android:layout_height="74dp"
-        android:layout_marginTop="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_marginTop="20dp"
         android:text="Hearbeat Smartphone"
-        app:layout_constraintStart_toStartOf="parent"
+        android:inputType="text|textNoSuggestions"
+        android:background="@android:color/transparent"
+        android:gravity="top"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toEndOf="@+id/message"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/longitude" />
+        app:layout_constraintTop_toBottomOf="@+id/longitude_val"
+        android:paddingLeft="8dp"/>
 
     <View
         android:id="@+id/divider3"
@@ -220,5 +247,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+    <TextView
+        android:id="@+id/phonemap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text=""
+        android:layout_marginEnd="36dp"
+        android:layout_marginStart="36dp"
+        android:gravity="top|center_horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EnvoyerIDMEFv2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
