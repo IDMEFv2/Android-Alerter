@@ -34,9 +34,7 @@ Known bugs / limitations:
 
 # Application on ANDROID
 
-![screenshot](docs/Android-Alert.jpeg)
-![screenshot](docs/Android-Settings.jpeg)
-![screenshot](docs/Android-Help.jpeg)
+![screenshot](docs/ANDROID.png)
 
 # Alert in Concerto
 
