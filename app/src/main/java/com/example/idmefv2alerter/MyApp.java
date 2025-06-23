@@ -5,8 +5,8 @@ import android.app.Application;
 public class MyApp extends Application {
     private String user = "John Doe";
     private String url = "http://141.95.158.49/api_idmefv2/";
-    private String login = "admin";
-    private String password = "S4Sadmin";
+    private String login = "idmefv2";
+    private String password = "idmefv2";
     private Integer user_category = 0;
     private String priority = "Info";
 
