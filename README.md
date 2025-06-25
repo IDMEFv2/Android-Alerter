@@ -3,7 +3,7 @@ IDMEFv2 Android Alerter is a small IDMEFv2 agent Android App sending IDMEFv2 ale
 The actual version is a POC that will be improved. The objective is to test the use of live geolocation in a moving asset and also confirm IDMEFv2 is quite easy to implement anywhere.
 
 Prerequiite:
-- An Android phone for sending IDMEFv2 messages
+- An Android phone for sending IDMEFv2 messages (should work at least on Android 11 and later)
 - An IDMEFv2 SIEM Server for receiving IDMEFv2 messages
 
 IMPORTANT: If app already installed, it's safer for the moment to desinstall instead of upgrading (not fully tested)
